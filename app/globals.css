@@ -1,26 +1,162 @@
 @import "tailwindcss";
 
+/* =============================================================================
+   Esporta Recommendation Control Center — visual system.
+
+   NO decorative borders or strokes anywhere: structure comes from spacing,
+   typography, tonal surfaces, dividers and the surface ladder. Green is the
+   ONLY accent (#20CC01 — the locked brand byte), used for active/CTA/success/
+   key metrics. Both themes are designed, not inverted.
+   ============================================================================= */
+
+@theme {
+  /* Typography — one family: Geist. */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Esporta brand green — byte-identical in both themes, the only accent. */
+  --color-brand: #20cc01;
+  --color-brand-dim: #1aa301;
+  --color-brand-ink: #04140a;
+
+  /* Semantic status hues — sparing use only. */
+  --color-danger: #e5484d;
+  --color-danger-ink: #ffffff;
+  --color-warning: #e5a000;
+  --color-info: #8a9aa6;
+
+  /* Dark ladder (default) — near-black page, charcoal surfaces. */
+  --color-page: #0a0d0b;
+  --color-surface: #121613;
+  --color-surface-2: #191e1a;
+  --color-surface-3: #212722;
+  --color-hover: #232925;
+
+  --color-ink: #f2f5f3;
+  --color-ink-2: #b8c2bd;
+  --color-ink-3: #7d8a83;
+  --color-ink-4: #55605a;
+
+  --color-line: #232925;
+
+  /* Charts — neutral supporting tones; brand green reserved for the primary
+     series / the "now" line. */
+  --color-chart-1: #20cc01;
+  --color-chart-2: #6f7d76;
+  --color-chart-3: #48544e;
+  --color-chart-4: #8fa39a;
+  --color-chart-5: #3b463f;
+
+  --radius-panel: 14px;
+}
+
+.light {
+  /* Light ladder — warm/neutral white, subtle gray surfaces. Designed from
+     scratch: greys carry no green tint. */
+  --color-page: #f4f5f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #fafbfa;
+  --color-surface-3: #eef0ef;
+  --color-hover: #e9ebe9;
+
+  --color-ink: #0d100e;
+  --color-ink-2: #4a524d;
+  --color-ink-3: #6f7773;
+  --color-ink-4: #99a19c;
+
+  --color-line: #e4e7e5;
+
+  --color-chart-2: #9aa5a0;
+  --color-chart-3: #c3cbc7;
+  --color-chart-4: #77837d;
+  --color-chart-5: #d8dedb;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.light {
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular numerals everywhere numbers matter — tables, metrics, scores. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Focus ring — visible, brand-colored, never removed. */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* Reduced motion — honored globally, not per-component. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Thin scrollbars that match the ladder. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-3) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-surface-3);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Subtle page-entry motion (disabled under reduced-motion above). */
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-in {
+  animation: page-in 160ms ease-out;
+}
+
+/* Recharts tooltip is rendered outside the class tree — style it directly. */
+.recharts-default-tooltip {
+  background: var(--color-surface-2) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: var(--color-ink) !important;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35) !important;
+}
+.recharts-tooltip-item {
+  color: var(--color-ink-2) !important;
 }
