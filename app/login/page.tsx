@@ -1,8 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useAuth } from "@/providers/auth-provider";
+import { Button } from "@/components/ui/interactive";
 import { loginAction } from "./actions";
+
+/* =============================================================================
+   Login — the one screen outside the shell, in the same visual system as
+   the rest of the console: near-black page, tonal surfaces, no borders,
+   brand green reserved for the single CTA.
+   ============================================================================= */
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +34,6 @@ export default function LoginPage() {
       }
 
       login(result.user);
-      
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "Invalid credentials or system error");
@@ -36,60 +43,95 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-        <div className="text-center mb-8 flex flex-col items-center">
-          <img src="/logo.jpg" alt="Esporta Logo" className="h-16 w-16 mb-4 rounded-xl object-contain shadow-sm border border-gray-200 dark:border-gray-700" />
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-2">
-            Esporta Admin
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-page px-4">
+      {/* One quiet brand presence at the top — nothing else decorates. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(60%_100%_at_50%_0%,rgb(32_204_1_/_0.07),transparent_70%)]"
+      />
+
+      <main className="page-in relative w-full max-w-sm">
+        <div className="flex flex-col items-center text-center">
+          <Image
+            src="/logo.jpg"
+            alt=""
+            width={48}
+            height={48}
+            priority
+            className="h-12 w-12 rounded-xl object-contain"
+          />
+          <h1 className="mt-5 text-[19px] font-semibold tracking-tight text-ink">
+            Esporta
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Sign in to access the Recommendation Control Center
+          <p className="mt-1 text-[13px] leading-5 text-ink-3">
+            Recommendation Control Center
           </p>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 rounded-md bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm border border-red-200 dark:border-red-800">
-            {error}
-          </div>
-        )}
+        <section className="mt-8 rounded-2xl bg-surface p-6">
+          {error && (
+            <div
+              role="alert"
+              className="mb-5 rounded-lg bg-danger/15 px-3.5 py-2.5 text-[13px] leading-5 text-danger"
+            >
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 transition-colors"
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-      </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-[13px] font-medium text-ink-2"
+              >
+                Email address
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="operator@esporta.site"
+                className="mt-2 w-full rounded-lg bg-surface-2 px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-4 transition-colors focus:bg-surface-3"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-[13px] font-medium text-ink-2"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="mt-2 w-full rounded-lg bg-surface-2 px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-4 transition-colors focus:bg-surface-3"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isLoading}
+              className="w-full py-2.5"
+            >
+              {isLoading ? "Signing in…" : "Sign in"}
+            </Button>
+          </form>
+        </section>
+
+        <p className="mt-6 text-center text-[11px] leading-4 text-ink-4">
+          Authorized operators only.
+        </p>
+      </main>
     </div>
   );
 }
