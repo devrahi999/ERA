@@ -229,8 +229,10 @@ export interface IdentityRef {
  * gone (permanently deleted) the embed is `null`, not a placeholder. These
  * keep every table honest without crashing the page.
  */
-export function identityHandle(identity: IdentityRef | null | undefined): string {
-  return identity ? `@${identity.username}` : "@deleted";
+export function identityHandle(
+  identity: { username: string | null } | null | undefined,
+): string {
+  return identity?.username ? `@${identity.username}` : "@deleted";
 }
 
 export function identityName(identity: IdentityRef | null | undefined): string {
@@ -343,9 +345,10 @@ export interface PostExposureHistory {
 
 export interface UserOverviewRow {
   identity_id: string;
-  username: string;
-  display_name: string;
-  kind: string;
+  /** Correlated-subquery embed — null once the identity is hard-deleted. */
+  username: string | null;
+  display_name: string | null;
+  kind: string | null;
   is_cold_start: boolean;
   interaction_count: number;
   confidence: number;

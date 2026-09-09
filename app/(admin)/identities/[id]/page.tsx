@@ -133,8 +133,8 @@ export default function IdentityDetailPage() {
               {audience.map((viewer) => (
                 <div key={viewer.viewer_id} className="flex items-center gap-3 rounded-lg px-2 py-2 text-[13px]">
                   <span className="min-w-0 flex-1 truncate text-ink-2">
-                    @{viewer.username}
-                    <span className="ml-1.5 text-[11px] text-ink-4">{viewer.kind}</span>
+                    {viewer.username ? `@${viewer.username}` : "@deleted"}
+                    <span className="ml-1.5 text-[11px] text-ink-4">{viewer.kind ?? "identity"}</span>
                   </span>
                   <span className="tnum text-xs font-medium text-ink">
                     {formatCompact(viewer.impressions)}

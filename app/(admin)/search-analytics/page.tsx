@@ -57,7 +57,7 @@ export default function SearchPage() {
             <option value="">Select a viewer…</option>
             {(users.data?.rows ?? []).map((user: UserOverviewRow) => (
               <option key={user.identity_id} value={user.identity_id}>
-                @{user.username} {user.is_cold_start ? "(cold start)" : ""}
+                {user.username ? `@${user.username}` : "@deleted"} {user.is_cold_start ? "(cold start)" : ""}
               </option>
             ))}
           </select>

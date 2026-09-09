@@ -9,6 +9,7 @@ import { DataTable, type Column } from "@/components/ui/data";
 import { FilterBar, FilterSearch, FilterSelect } from "@/components/ui/filters";
 import { useUsersOverview } from "@/lib/api/queries";
 import type { UserOverviewRow } from "@/types";
+import { identityHandle } from "@/types";
 import { formatNumber, formatRatio, timeAgo } from "@/lib/formatters/format";
 
 /* =============================================================================
@@ -31,13 +32,13 @@ export default function UsersPage() {
         <Link href={`/users/${row.identity_id}`} className="group block min-w-0">
           <div className="flex items-center gap-2">
             <span className="truncate text-[13px] font-medium text-ink group-hover:text-brand">
-              {row.display_name}
+              {row.display_name ?? "Deleted profile"}
             </span>
             {row.is_cold_start ? <Badge tone="info">cold start</Badge> : null}
             {row.has_active_controls ? <Badge tone="brand">controls</Badge> : null}
           </div>
           <div className="mt-0.5 text-xs text-ink-4">
-            @{row.username} · {row.kind}
+            {identityHandle(row)} · {row.kind ?? "identity"}
           </div>
         </Link>
       ),

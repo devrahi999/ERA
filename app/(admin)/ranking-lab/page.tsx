@@ -71,7 +71,7 @@ export default function RankingLabPage() {
               <option value="">Select a viewer…</option>
               {(users.data?.rows ?? []).map((user) => (
                 <option key={user.identity_id} value={user.identity_id}>
-                  @{user.username}
+                  {user.username ? `@${user.username}` : "@deleted"}
                 </option>
               ))}
             </select>

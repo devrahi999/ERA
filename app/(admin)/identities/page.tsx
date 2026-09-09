@@ -9,6 +9,7 @@ import { DataTable, type Column } from "@/components/ui/data";
 import { FilterBar, FilterSearch } from "@/components/ui/filters";
 import { useUsersOverview } from "@/lib/api/queries";
 import type { UserOverviewRow } from "@/types";
+import { identityHandle } from "@/types";
 import { formatNumber, timeAgo } from "@/lib/formatters/format";
 
 /* =============================================================================
@@ -29,9 +30,9 @@ export default function IdentitiesPage() {
       render: (row) => (
         <Link href={`/identities/${row.identity_id}`} className="group block min-w-0">
           <div className="truncate text-[13px] font-medium text-ink group-hover:text-brand">
-            {row.display_name}
+            {row.display_name ?? "Deleted profile"}
           </div>
-          <div className="mt-0.5 text-xs text-ink-4">@{row.username}</div>
+          <div className="mt-0.5 text-xs text-ink-4">{identityHandle(row)}</div>
         </Link>
       ),
     },
