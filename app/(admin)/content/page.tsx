@@ -9,6 +9,7 @@ import { DataTable, type Column } from "@/components/ui/data";
 import { FilterBar, FilterSearch, FilterSelect } from "@/components/ui/filters";
 import { useContentStats } from "@/lib/api/queries";
 import type { ContentStatsRow } from "@/types";
+import { identityHandle } from "@/types";
 import { formatCompact, formatNumber, formatRatio, timeAgo } from "@/lib/formatters/format";
 
 /* =============================================================================
@@ -32,10 +33,10 @@ export default function ContentPage() {
       render: (row) => (
         <Link href={`/content/${row.post_id}`} className="group block min-w-0">
           <div className="truncate text-[13px] font-medium text-ink group-hover:text-brand">
-            {row.post.caption || "Untitled"}
+            {row.post?.caption || "Untitled"}
           </div>
           <div className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-4">
-            <span>@{row.author.username}</span>
+            <span>{identityHandle(row.author)}</span>
             {row.is_short ? (
               <>
                 <span aria-hidden="true">·</span>
@@ -43,7 +44,7 @@ export default function ContentPage() {
               </>
             ) : null}
             <span aria-hidden="true">·</span>
-            <span>{timeAgo(row.post.created_at)}</span>
+            <span>{timeAgo(row.post?.created_at ?? null)}</span>
           </div>
         </Link>
       ),
@@ -62,7 +63,9 @@ export default function ContentPage() {
           <Badge tone="brand">eligible</Badge>
         ) : (
           <Badge tone="danger">
-            {row.post.deleted_at !== null ? "deleted" : row.post.moderation_status}
+            {row.post?.deleted_at != null
+              ? "deleted"
+              : row.post?.moderation_status ?? "unknown"}
           </Badge>
         ),
     },

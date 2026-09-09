@@ -8,6 +8,7 @@ import { DataTable, type Column } from "@/components/ui/data";
 import { DateRangeFilter, rangeToWindow } from "@/components/ui/filters";
 import { useTopPosts } from "@/lib/api/queries";
 import type { TopPostRow } from "@/types";
+import { identityHandle } from "@/types";
 import { formatCompact, formatNumber, formatPercent, timeAgo } from "@/lib/formatters/format";
 
 /* =============================================================================
@@ -44,9 +45,9 @@ export default function PerformancePage() {
       render: (row) => (
         <Link href={`/content/${row.post_id}`} className="group block min-w-0">
           <div className="truncate text-[13px] font-medium text-ink group-hover:text-brand">
-            {row.post.caption || "Untitled"}
+            {row.post?.caption || "Untitled"}
           </div>
-          <div className="text-xs text-ink-4">@{row.author.username}</div>
+          <div className="text-xs text-ink-4">{identityHandle(row.author)}</div>
         </Link>
       ),
     },

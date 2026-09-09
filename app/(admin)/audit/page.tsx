@@ -76,7 +76,9 @@ export default function AuditPage() {
       align: "right",
       hideOnMobile: true,
       render: (row) => (
-        <span className="font-mono text-[11px] text-ink-4">{row.actor_user_id.slice(0, 8)}</span>
+        <span className="font-mono text-[11px] text-ink-4">
+          {row.actor_user_id ? row.actor_user_id.slice(0, 8) : "system"}
+        </span>
       ),
     },
     {

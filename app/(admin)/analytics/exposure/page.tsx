@@ -22,6 +22,7 @@ import {
   useTopGames,
 } from "@/lib/api/queries";
 import type { TopCreatorRow, TopGameRow } from "@/types";
+import { identityHandle, identityName } from "@/types";
 import { formatCompact, formatNumber, formatPercent } from "@/lib/formatters/format";
 
 /* =============================================================================
@@ -51,8 +52,8 @@ export default function ExposurePage() {
       header: "Creator",
       render: (row) => (
         <div>
-          <div className="text-[13px] font-medium text-ink">{row.creator.display_name}</div>
-          <div className="text-xs text-ink-4">@{row.creator.username} · {row.creator.kind}</div>
+          <div className="text-[13px] font-medium text-ink">{identityName(row.creator)}</div>
+          <div className="text-xs text-ink-4">{identityHandle(row.creator)} · {row.creator?.kind ?? "identity"}</div>
         </div>
       ),
     },

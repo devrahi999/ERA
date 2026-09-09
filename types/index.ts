@@ -181,7 +181,7 @@ export interface AuditRow {
   id: string;
   version_id: string | null;
   action: string;
-  actor_user_id: string;
+  actor_user_id: string | null;
   before_state: unknown;
   after_state: unknown;
   note: string | null;
@@ -223,6 +223,24 @@ export interface IdentityRef {
   verified?: boolean;
 }
 
+/**
+ * Render helpers for nullable identity embeds. The backend's SQL builds
+ * `author`/`creator` with correlated subqueries — when the identity row is
+ * gone (permanently deleted) the embed is `null`, not a placeholder. These
+ * keep every table honest without crashing the page.
+ */
+export function identityHandle(identity: IdentityRef | null | undefined): string {
+  return identity ? `@${identity.username}` : "@deleted";
+}
+
+export function identityName(identity: IdentityRef | null | undefined): string {
+  return identity?.display_name ?? "Deleted profile";
+}
+
+export function identityKey(identity: IdentityRef | null | undefined, fallback: string): string {
+  return identity?.id ?? fallback;
+}
+
 export interface TopPostRow {
   post_id: string;
   impressions: number;
@@ -236,8 +254,8 @@ export interface TopPostRow {
     deleted_at: string | null;
     moderation_status: string;
     visibility: string;
-  };
-  author: IdentityRef;
+  } | null;
+  author: IdentityRef | null;
   game: string | null;
   features: {
     quality_score: number;
@@ -259,7 +277,7 @@ export interface TopPostRow {
 }
 
 export interface TopCreatorRow {
-  creator: IdentityRef;
+  creator: IdentityRef | null;
   impressions: number;
   posts: number;
   reach: number;
@@ -298,8 +316,8 @@ export interface ContentStatsRow {
     deleted_at: string | null;
     moderation_status: string;
     visibility: string;
-  };
-  author: IdentityRef;
+  } | null;
+  author: IdentityRef | null;
 }
 
 export interface PagedRows<T> {

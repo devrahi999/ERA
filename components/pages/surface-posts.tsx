@@ -18,6 +18,7 @@ import { DataTable, CHART_COLORS, chartAxisProps, type Column } from "@/componen
 import { DateRangeFilter, rangeToWindow } from "@/components/ui/filters";
 import { useExposureOverview, useTopPosts } from "@/lib/api/queries";
 import type { TopPostRow } from "@/types";
+import { identityHandle } from "@/types";
 import {
   formatCompact,
   formatMs,
@@ -70,10 +71,10 @@ export function SurfacePostsPage({
       render: (row) => (
         <Link href={`/content/${row.post_id}`} className="group block min-w-0">
           <div className="truncate text-[13px] font-medium text-ink group-hover:text-brand">
-            {row.post.caption || "Untitled"}
+            {row.post?.caption || "Untitled"}
           </div>
           <div className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-4">
-            <span>@{row.author.username}</span>
+            <span>{identityHandle(row.author)}</span>
             {row.game ? (
               <>
                 <span aria-hidden="true">·</span>
@@ -81,7 +82,7 @@ export function SurfacePostsPage({
               </>
             ) : null}
             <span aria-hidden="true">·</span>
-            <span>{timeAgo(row.post.created_at)}</span>
+            <span>{timeAgo(row.post?.created_at ?? null)}</span>
           </div>
         </Link>
       ),
@@ -152,11 +153,12 @@ export function SurfacePostsPage({
       header: "Status",
       hideOnMobile: true,
       render: (row) => {
+        const deleted = row.post?.deleted_at != null;
         const ineligible =
-          row.post.deleted_at !== null || row.post.moderation_status !== "published";
+          deleted || (row.post?.moderation_status ?? "unknown") !== "published";
         return ineligible ? (
           <Badge tone="danger">
-            {row.post.deleted_at !== null ? "deleted" : row.post.moderation_status}
+            {deleted ? "deleted" : row.post?.moderation_status ?? "unknown"}
           </Badge>
         ) : (
           <Badge tone="neutral">published</Badge>

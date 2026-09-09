@@ -22,6 +22,7 @@ import {
   useTopCreators,
   useTopPosts,
 } from "@/lib/api/queries";
+import { identityHandle, identityKey, identityName } from "@/types";
 import {
   formatCompact,
   formatNumber,
@@ -204,10 +205,10 @@ export default function OverviewPage() {
                 <span className="tnum w-5 text-right text-xs font-medium text-ink-4">{i + 1}</span>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13px] font-medium text-ink">
-                    {row.post.caption || "Untitled"}
+                    {row.post?.caption || "Untitled"}
                   </div>
                   <div className="text-xs text-ink-4">
-                    @{row.author.username}
+                    {identityHandle(row.author)}
                     {row.game ? ` · ${row.game}` : ""}
                   </div>
                 </div>
@@ -228,15 +229,15 @@ export default function OverviewPage() {
         <Section title="Top creators by exposure" note="Concentration watch">
           <div className="space-y-1.5">
             {(topCreators.data?.rows ?? []).map((row, i) => (
-              <div key={row.creator.id} className="flex items-center gap-3 rounded-lg px-2 py-2">
+              <div key={identityKey(row.creator, `creator-${i}`)} className="flex items-center gap-3 rounded-lg px-2 py-2">
                 <span className="tnum w-5 text-right text-xs font-medium text-ink-4">{i + 1}</span>
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-[13px] font-medium text-ink">
-                    {row.creator.display_name}
-                    {row.creator.verified ? <span className="ml-1 text-brand">✓</span> : null}
+                    {identityName(row.creator)}
+                    {row.creator?.verified ? <span className="ml-1 text-brand">✓</span> : null}
                   </div>
                   <div className="text-xs text-ink-4">
-                    @{row.creator.username} · {formatNumber(row.posts)} posts
+                    {identityHandle(row.creator)} · {formatNumber(row.posts)} posts
                   </div>
                 </div>
                 <div className="text-right">

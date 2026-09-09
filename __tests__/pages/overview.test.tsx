@@ -122,6 +122,48 @@ describe('Overview page', () => {
     expect(screen.getByText('Backend unreachable')).toBeInTheDocument();
   });
 
+  it('renders top posts/creators with null embeds (deleted identity) without crashing', async () => {
+    vi.mocked(useTopPosts).mockReturnValue({
+      ...emptyQuery,
+      data: {
+        total: 1,
+        limit: 5,
+        offset: 0,
+        rows: [
+          {
+            post_id: 'p1',
+            impressions: 10,
+            reach: 3,
+            last_shown_at: '2026-09-08T00:00:00Z',
+            post: null,
+            author: null,
+            game: null,
+            features: null,
+            engagement: null,
+          },
+        ],
+      },
+    } as unknown as ReturnType<typeof useTopPosts>);
+    vi.mocked(useTopCreators).mockReturnValue({
+      ...emptyQuery,
+      data: {
+        total: 1,
+        limit: 5,
+        offset: 0,
+        rows: [
+          { creator: null, impressions: 10, posts: 2, reach: 4, share: 100 },
+        ],
+      },
+    } as unknown as ReturnType<typeof useTopCreators>);
+
+    render(<OverviewPage />);
+    await waitFor(() => {
+      expect(screen.getByText('Untitled')).toBeInTheDocument();
+      expect(screen.getByText('@deleted')).toBeInTheDocument();
+      expect(screen.getByText('Deleted profile')).toBeInTheDocument();
+    });
+  });
+
   it('surfaces active interventions as a signal row', async () => {
     vi.mocked(useInterventions).mockReturnValue({
       ...emptyQuery,
