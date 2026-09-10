@@ -46,7 +46,16 @@ export function useOverview() {
 export function useConfigHistory(limit = 50, offset = 0) {
   return useQuery({
     queryKey: ["reco", "config-history", limit, offset],
-    queryFn: () => fetchApi<ConfigVersion[]>(`${BASE}/config/history?limit=${limit}&offset=${offset}`),
+    queryFn: async () => {
+      // The backend pages the history as `{ items: [...] }`, not a bare array.
+      // Every page consumes this hook as a list — unwrap once, here, so the
+      // hook's contract stays "the versions" and no call site can trip on the
+      // wire shape after the query resolves.
+      const data = await fetchApi<{ items: ConfigVersion[] }>(
+        `${BASE}/config/history?limit=${limit}&offset=${offset}`,
+      );
+      return data?.items ?? [];
+    },
   });
 }
 
@@ -61,7 +70,14 @@ export function useConfigVersion(versionId: string | null | undefined) {
 export function useAuditLog(limit = 50, offset = 0) {
   return useQuery({
     queryKey: ["reco", "audit", limit, offset],
-    queryFn: () => fetchApi<AuditRow[]>(`${BASE}/audit?limit=${limit}&offset=${offset}`),
+    queryFn: async () => {
+      // Same `{ items: [...] }` wire shape as config history — see
+      // useConfigHistory for why the unwrap lives here.
+      const data = await fetchApi<{ items: AuditRow[] }>(
+        `${BASE}/audit?limit=${limit}&offset=${offset}`,
+      );
+      return data?.items ?? [];
+    },
   });
 }
 
